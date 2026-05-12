@@ -330,7 +330,7 @@ message.
 
 - Must match `^[a-z0-9][a-z0-9_-]{0,63}$` (lowercase, alphanumerics, hyphen,
   underscore; must start with alphanumeric; max 64 chars).
-- Must not collide with reserved paths: `CNAME`, `404`, `index`, `style`,
+- Must not collide with reserved paths: `cname`, `404`, `index`, `style`,
   `docs`, `assets`, `static`, `templates`, `paulias`.
 - Must be unique within the file.
 
@@ -442,23 +442,23 @@ writes new tests before the step is marked done.
 
 The minimum to load and validate `paulias.md`. No HTML output yet.
 
-- [ ] **1.1** Scaffold the project following paulblish/pauldot conventions:
+- [x] **1.1** Scaffold the project following paulblish/pauldot conventions:
   `pyproject.toml` (hatchling backend, click + pyyaml + jinja2 +
   markdown-it-py + rich dependencies), flat `paulias/` package, `Makefile`,
   `.python-version` (3.14), `uv.lock`, `README.md`, `CHANGELOG.md`,
   `CONTRIBUTING.md`, `LICENSE` (MIT), `CLAUDE.md`, `.gitignore`.
-- [ ] **1.2** Implement `config.py`: dataclasses for `PauliasConfig` (the
+- [x] **1.2** Implement `config.py`: dataclasses for `PauliasConfig` (the
   parsed frontmatter) and `Shortlink` (a single entry). Parser that reads
   `paulias.md`, splits YAML frontmatter from the body, and parses the
   markdown link reference definitions (`^\\[([^\\]]+)\\]: (.+)$`) into
   ordered `Shortlink` objects.
-- [ ] **1.3** Implement `validate.py`: path regex check, target URL check,
+- [x] **1.3** Implement `validate.py`: path regex check, target URL check,
   frontmatter field checks, reserved-path collision check, duplicate-path
   check.
-- [ ] **1.4** Wire `config.py` and `validate.py` together so loading
+- [x] **1.4** Wire `config.py` and `validate.py` together so loading
   `paulias.md` runs validation by default. Surface validation errors with
   clear messages.
-- [ ] **1.5** Write tests for: parsing a valid file, missing frontmatter,
+- [x] **1.5** Write tests for: parsing a valid file, missing frontmatter,
   invalid YAML, no link references in body, malformed link reference lines,
   invalid paths (uppercase, symbols, reserved words), invalid URLs (no
   scheme, no host), invalid repo field, duplicate paths.

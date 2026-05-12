@@ -170,7 +170,7 @@ Shortlinks are standard markdown link reference definitions. Each line maps a sh
 - Lowercase alphanumerics, hyphens, and underscores only.
 - Must start with an alphanumeric character.
 - Maximum 64 characters.
-- Must not collide with reserved paths: `CNAME`, `404`, `index`, `style`, `docs`, `assets`, `static`, `templates`, `paulias`.
+- Must not collide with reserved paths: `cname`, `404`, `index`, `style`, `docs`, `assets`, `static`, `templates`, `paulias`.
 
 ## Custom domain setup
 
