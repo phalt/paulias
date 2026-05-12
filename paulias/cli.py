@@ -11,6 +11,8 @@ from rich.table import Table
 
 from paulias import __version__, config
 from paulias import build as build_module
+from paulias import deploy as deploy_module
+from paulias.deploy import GitError
 from paulias.validate import ValidationError, validate_path, validate_target
 
 PAULIAS_MD = "paulias.md"
@@ -178,7 +180,8 @@ def add_cmd(path: str, url: str, force: bool, run_deploy: bool) -> None:
     click.echo("Run 'paulias deploy' to publish.")
 
     if run_deploy:
-        click.echo("--deploy not yet implemented.")
+        ctx = click.get_current_context()
+        ctx.invoke(deploy_cmd)
 
 
 @main.command("delete")
@@ -195,7 +198,8 @@ def delete_cmd(path: str, run_deploy: bool) -> None:
     click.echo(f"Deleted [{path}].")
 
     if run_deploy:
-        click.echo("--deploy not yet implemented.")
+        ctx = click.get_current_context()
+        ctx.invoke(deploy_cmd)
 
 
 @main.command("init")
@@ -238,7 +242,29 @@ def deploy_cmd(dry_run: bool, no_push: bool, message: str | None, force: bool) -
         click.echo("Dry run — skipping commit and push.")
         return
 
-    raise click.ClickException("Deploy (commit + push) not yet implemented (Phase 4).")
+    repo_root = paulias_path.parent
+
+    if deploy_module.is_clean(repo_root):
+        click.echo("Nothing to commit — already up to date.")
+        return
+
+    try:
+        deploy_module.stage([paulias_path, docs_dir], repo_root)
+        msg = message or deploy_module.generate_commit_message(cfg, repo_root)
+        deploy_module.commit(msg, repo_root)
+        click.echo(f"Committed: {msg}")
+    except GitError as exc:
+        raise click.ClickException(str(exc)) from exc
+
+    if no_push:
+        click.echo("--no-push: skipping push.")
+        return
+
+    try:
+        deploy_module.push(cfg.branch, repo_root)
+        click.echo(f"Pushed to {cfg.repo} ({cfg.branch}).")
+    except GitError as exc:
+        raise click.ClickException(str(exc)) from exc
 
 
 @main.command("serve")

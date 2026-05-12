@@ -1,6 +1,6 @@
 ---
 repo: phalt/paulias
-cname:
+cname: paulias.dev
 branch: main
 title: Paul's shortlinks
 about: "Hello. I am [Paul Hallett](https://paulwrites.software) and these are my shortlinks:"

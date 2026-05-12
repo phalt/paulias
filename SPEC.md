@@ -556,19 +556,19 @@ plus a footer customised via frontmatter.
 
 ### Phase 4: Deploy (git commit + push)
 
-- [ ] **4.1** Implement `deploy.py`: thin wrapper around `subprocess` calls to
+- [x] **4.1** Implement `deploy.py`: thin wrapper around `subprocess` calls to
   `git`. Functions: `is_clean()`, `stage(paths)`, `commit(message)`,
   `push(branch)`. Errors from git are surfaced verbatim with the failing
   command shown.
-- [ ] **4.2** Implement commit-message generation: diff the current shortlink
+- [x] **4.2** Implement commit-message generation: diff the current shortlink
   set against the previous commit's `paulias.md` (read via `git show
   HEAD:paulias.md`), report `M added, K removed` counts. Fall back to the
   total count if there is no previous commit.
-- [ ] **4.3** Wire the full `paulias deploy` flow: validate → build → stage →
+- [x] **4.3** Wire the full `paulias deploy` flow: validate → build → stage →
   commit → push. Honour `--dry-run`, `--no-push`, `--message`, `--force`.
-- [ ] **4.4** Wire the `--deploy` flag on `paulias add` and `paulias delete`
+- [x] **4.4** Wire the `--deploy` flag on `paulias add` and `paulias delete`
   to call the deploy command immediately after editing.
-- [ ] **4.5** Write tests for: commit message generation (no prior commit,
+- [x] **4.5** Write tests for: commit message generation (no prior commit,
   prior commit identical, prior commit different), `--dry-run` does not call
   git, `--no-push` calls commit but not push, idempotency (deploy with no
   changes produces no commit). Mock `subprocess` for these tests.
