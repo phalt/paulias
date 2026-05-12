@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ title }}{% endblock %}</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <nav class="site-nav">
+    <a href="/" class="nav-title">{{ title }}</a>
+  </nav>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    {% if footer %}
+      {{ footer | safe }}
+    {% else %}
+      <p>Built with <a href="https://github.com/phalt/paulias">Paulias</a></p>
+    {% endif %}
+  </footer>
+</body>
+</html>

@@ -498,7 +498,7 @@ delete`, and `paulias list` to manage the config file from the command line.
 Generating the `docs/` directory from a valid `paulias.md`. No git involved
 yet.
 
-- [ ] **3.1** Implement `render.py`: Jinja2 environment that loads templates
+- [x] **3.1** Implement `render.py`: Jinja2 environment that loads templates
   from the bundled package first, then overrides from a local `templates/`
   directory next to `paulias.md` if present. Single entry point
   `render(template_name, **context) -> str`. The environment also exposes a
@@ -506,42 +506,42 @@ yet.
   markdown-to-HTML conversion limited to inline elements (links, emphasis,
   code) — block-level markdown is collapsed to plain text. Used to render
   the `footer` frontmatter field.
-- [ ] **3.2** Write the bundled `templates/redirect.html.j2` per the redirect
+- [x] **3.2** Write the bundled `templates/redirect.html.j2` per the redirect
   template in this spec. Context: `target`. The redirect template is the
   only one that does not extend `base.html.j2` — it is a minimal standalone
   HTML document because it never reaches the user visually (the browser
   immediately follows the redirect).
-- [ ] **3.3** Copy `templates/static/style.css` from
+- [x] **3.3** Copy `templates/static/style.css` from
   [phalt/paulblish](https://github.com/phalt/paulblish) verbatim into
   `paulias/templates/style.css`. Pin the source commit hash in a comment at
   the top of the file so future updates are traceable. Add an
   appended block of Paulias-specific styles for the shortlinks table (`.shortlinks`)
   and any custom footer styling, reusing the paulblish CSS custom properties
   (`--bg`, `--text`, `--accent-teal`, etc.) — no new colour literals.
-- [ ] **3.4** Write the bundled `templates/base.html.j2`, structured
+- [x] **3.4** Write the bundled `templates/base.html.j2`, structured
   identically to paulblish's `base.html`: the same `<head>` boilerplate,
   monospace heading font stack, `.site-nav`, `.site-footer`, and
   `{% block content %}` hook. The nav contains a single link back to the
   site root (the page title). The footer renders the pre-rendered `footer`
   HTML if non-empty, otherwise falls back to a default attribution linking
   to the Paulias GitHub repo.
-- [ ] **3.5** Write the bundled `templates/index.html.j2`. Extends
+- [x] **3.5** Write the bundled `templates/index.html.j2`. Extends
   `base.html.j2`. Context: `title`, `about`, `footer`, `cname`,
   `shortlinks`. Renders the title as `<h1>`, the about block as a `<p>`,
   and the shortlinks as a styled `<table class="shortlinks">` with each
   `short` rendered as a link to `/short/`.
-- [ ] **3.6** Write the bundled `templates/404.html.j2`. Extends
+- [x] **3.6** Write the bundled `templates/404.html.j2`. Extends
   `base.html.j2`. Context: `title`, `footer`. Body content matches
   paulblish's 404 page styling.
-- [ ] **3.7** Implement `build.py`: wipe `docs/`, create one
+- [x] **3.7** Implement `build.py`: wipe `docs/`, create one
   `docs/{short}/index.html` per row, write `docs/CNAME` if `cname` is set,
   write `docs/index.html`, `docs/404.html`, `docs/style.css`. The `footer`
   frontmatter field is passed through the `inline_markdown` filter before
   being injected into the templates. Return the list of files written for
   CLI reporting.
-- [ ] **3.8** Wire `build()` into the deploy command path with a `--dry-run`
+- [x] **3.8** Wire `build()` into the deploy command path with a `--dry-run`
   flag that exits after building.
-- [ ] **3.9** Write tests for: a single shortlink produces a correct
+- [x] **3.9** Write tests for: a single shortlink produces a correct
   redirect HTML, `cname` set writes `CNAME`, `cname` unset omits it, index
   page lists all entries in order, 404 page renders, local template override
   is picked up, wipe removes stale files from a previous build, the

@@ -281,3 +281,39 @@ def test_init_repo_flag_overrides_auto_detect(tmp_path, monkeypatch):
     text = (tmp_path / "paulias.md").read_text()
     assert "repo: other/repo" in text
     assert "phalt/paulias" not in text
+
+
+def test_serve_errors_without_docs(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "paulias.md").write_text(VALID_MD, encoding="utf-8")
+    result = runner.invoke(main, ["serve"])
+    assert result.exit_code != 0
+    assert "deploy" in result.output.lower()
+
+
+def test_serve_starts_server(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "paulias.md").write_text(VALID_MD, encoding="utf-8")
+    (tmp_path / "docs").mkdir()
+
+    started = {}
+
+    class FakeServer:
+        def __init__(self, addr, handler):
+            started["addr"] = addr
+            started["dir"] = handler.keywords["directory"]
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_):
+            pass
+
+        def serve_forever(self):
+            raise KeyboardInterrupt
+
+    monkeypatch.setattr("paulias.cli.http.server.HTTPServer", FakeServer)
+    result = runner.invoke(main, ["serve", "--port", "9876"])
+    assert started["addr"] == ("", 9876)
+    assert started["dir"] == str(tmp_path / "docs")
+    assert "9876" in result.output

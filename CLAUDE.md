@@ -6,7 +6,7 @@ Paulias (`paulias`) is a CLI tool that takes a markdown file of short paths and 
 
 ## Implementation progress
 
-Current phase: **Phase 3 — Build pipeline**
+Current phase: **Phase 4 — Deploy (git commit + push)**
 
 After completing each phase step, check it off in `SPEC.md` (change `- [ ]` to `- [x]`) and update the current phase note above when the phase changes.
 

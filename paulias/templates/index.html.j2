@@ -1,0 +1,24 @@
+{% extends "base.html.j2" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+{% if about %}<p>{{ about | safe }}</p>{% endif %}
+<table class="shortlinks">
+  <thead>
+    <tr>
+      <th>short</th>
+      <th>target</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for link in shortlinks %}
+    <tr>
+      <td><a href="/{{ link.short }}/">{{ link.short }}</a></td>
+      <td><a href="{{ link.target }}">{{ link.target }}</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

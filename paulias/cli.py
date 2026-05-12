@@ -1,3 +1,5 @@
+import functools
+import http.server
 import json
 import re
 import subprocess
@@ -8,6 +10,7 @@ from rich.console import Console
 from rich.table import Table
 
 from paulias import __version__, config
+from paulias import build as build_module
 from paulias.validate import ValidationError, validate_path, validate_target
 
 PAULIAS_MD = "paulias.md"
@@ -220,4 +223,33 @@ def init_cmd(force: bool, repo_override: str | None) -> None:
 @click.option("--force", is_flag=True, help="Skip validation.")
 def deploy_cmd(dry_run: bool, no_push: bool, message: str | None, force: bool) -> None:
     """Build and deploy to GitHub Pages."""
-    raise click.ClickException("Deploy not yet implemented (Phase 4).")
+    paulias_path = _find_paulias_md()
+    try:
+        cfg = config.load(paulias_path, validate=not force)
+    except ValidationError as exc:
+        raise click.ClickException(str(exc)) from exc
+
+    docs_dir = paulias_path.parent / "docs"
+    local_templates = paulias_path.parent / "templates"
+    written = build_module.build(cfg, docs_dir, local_templates if local_templates.is_dir() else None)
+    click.echo(f"Built {len(written)} files to {docs_dir}.")
+
+    if dry_run:
+        click.echo("Dry run — skipping commit and push.")
+        return
+
+    raise click.ClickException("Deploy (commit + push) not yet implemented (Phase 4).")
+
+
+@main.command("serve")
+@click.option("--port", default=8000, show_default=True, help="Port to listen on.")
+def serve_cmd(port: int) -> None:
+    """Serve docs/ locally for previewing."""
+    paulias_path = _find_paulias_md()
+    docs_dir = (paulias_path.parent / "docs").resolve()
+    if not docs_dir.is_dir():
+        raise click.ClickException(f"{docs_dir} not found — run 'paulias deploy --dry-run' first.")
+    handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(docs_dir))
+    with http.server.HTTPServer(("", port), handler) as httpd:
+        click.echo(f"Serving {docs_dir} at http://localhost:{port}/ (Ctrl+C to stop)")
+        httpd.serve_forever()
