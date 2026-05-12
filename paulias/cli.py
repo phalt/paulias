@@ -262,7 +262,7 @@ def deploy_cmd(dry_run: bool, no_push: bool, message: str | None, force: bool) -
         raise click.ClickException(str(exc)) from exc
 
     if no_push:
-        click.echo("--no-push: skipping push.")
+        _console.print(f"[green]✓[/green] Committed: [italic]{msg}[/italic] (not pushed)")
         return
 
     try:

@@ -13,7 +13,6 @@ Requires Python 3.14+. The `.python-version` file pins the version; `uv` reads i
 ## Common commands
 
 ```sh
-make install   # uv sync
 make test      # uv run pytest
 make lint      # uv run ruff check .
 make format    # uv run ruff format .
