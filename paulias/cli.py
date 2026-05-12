@@ -3,6 +3,7 @@ import http.server
 import json
 import re
 import subprocess
+import webbrowser
 from pathlib import Path
 
 import click
@@ -14,6 +15,8 @@ from paulias import build as build_module
 from paulias import deploy as deploy_module
 from paulias.deploy import GitError
 from paulias.validate import ValidationError, validate_path, validate_target
+
+_console = Console()
 
 PAULIAS_MD = "paulias.md"
 LINK_REF_RE = re.compile(r"^\[([^\]]+)\]: (.+)$")
@@ -144,15 +147,15 @@ def list_cmd(as_json: bool) -> None:
     domain = cfg.cname or cfg.repo
     count = len(cfg.shortlinks)
     noun = "entry" if count == 1 else "entries"
-    console.print(f"\n[bold]{cfg.title}[/bold]  ({count} {noun}, deploying to {domain})\n")
+    _console.print(f"\n[bold]{cfg.title}[/bold]  ({count} {noun}, deploying to {domain})\n")
 
     table = Table(show_header=True, header_style="bold", box=None, padding=(0, 4, 0, 0))
     table.add_column("short")
     table.add_column("target")
     for s in cfg.shortlinks:
         table.add_row(s.short, s.target)
-    console.print(table)
-    console.print()
+    _console.print(table)
+    _console.print()
 
 
 @main.command("add")
@@ -176,8 +179,8 @@ def add_cmd(path: str, url: str, force: bool, run_deploy: bool) -> None:
 
     new_text = _add_link_ref(text, path, url, force=force)
     paulias_path.write_text(new_text, encoding="utf-8")
-    click.echo(f"Added [{path}]: {url}")
-    click.echo("Run 'paulias deploy' to publish.")
+    _console.print(f"[green]✓[/green] Added [{path}]: {url}")
+    _console.print("  Run [bold]paulias deploy[/bold] to publish.", style="dim")
 
     if run_deploy:
         ctx = click.get_current_context()
@@ -195,7 +198,8 @@ def delete_cmd(path: str, run_deploy: bool) -> None:
     if not found:
         raise click.ClickException(f"Path {path!r} not found in {PAULIAS_MD}.")
     paulias_path.write_text(new_text, encoding="utf-8")
-    click.echo(f"Deleted [{path}].")
+    _console.print(f"[green]✓[/green] Deleted [{path}].")
+    _console.print("  Run [bold]paulias deploy[/bold] to publish.", style="dim")
 
     if run_deploy:
         ctx = click.get_current_context()
@@ -213,11 +217,11 @@ def init_cmd(force: bool, repo_override: str | None) -> None:
 
     repo = repo_override or _detect_github_repo() or "<owner>/<repo>"
     paulias_path.write_text(STARTER_TEMPLATE.format(repo=repo), encoding="utf-8")
-    click.echo(f"Wrote {PAULIAS_MD}.")
-    click.echo("Next steps:")
-    click.echo("  1. Edit paulias.md and fill in your details.")
-    click.echo("  2. Run 'paulias add <path> <url>' to add shortlinks.")
-    click.echo("  3. Run 'paulias deploy' to build and publish.")
+    _console.print(f"[green]✓[/green] Wrote {PAULIAS_MD}.")
+    _console.print("\nNext steps:", style="bold")
+    _console.print("  1. Edit paulias.md and fill in your details.")
+    _console.print("  2. Run [bold]paulias add <path> <url>[/bold] to add shortlinks.")
+    _console.print("  3. Run [bold]paulias deploy[/bold] to build and publish.")
 
 
 @main.command("deploy")
@@ -236,16 +240,17 @@ def deploy_cmd(dry_run: bool, no_push: bool, message: str | None, force: bool) -
     docs_dir = paulias_path.parent / "docs"
     local_templates = paulias_path.parent / "templates"
     written = build_module.build(cfg, docs_dir, local_templates if local_templates.is_dir() else None)
-    click.echo(f"Built {len(written)} files to {docs_dir}.")
+    n = len(cfg.shortlinks)
+    noun = "shortlink" if n == 1 else "shortlinks"
 
     if dry_run:
-        click.echo("Dry run — skipping commit and push.")
+        _console.print(f"[green]✓[/green] Built {len(written)} files — dry run complete.")
         return
 
     repo_root = paulias_path.parent
 
     if deploy_module.is_clean(repo_root):
-        click.echo("Nothing to commit — already up to date.")
+        _console.print("[green]✓[/green] Nothing to commit — already up to date.")
         return
 
     try:
@@ -265,6 +270,31 @@ def deploy_cmd(dry_run: bool, no_push: bool, message: str | None, force: bool) -
         click.echo(f"Pushed to {cfg.repo} ({cfg.branch}).")
     except GitError as exc:
         raise click.ClickException(str(exc)) from exc
+
+    domain = cfg.cname or cfg.repo
+    _console.print(f"[green]✓[/green] Deployed {n} {noun} → [bold]{domain}[/bold]")
+
+
+@main.command("open")
+@click.argument("path")
+@click.option("--print", "print_only", is_flag=True, help="Print the target URL instead of opening it.")
+def open_cmd(path: str, print_only: bool) -> None:
+    """Open a shortlink's target URL in the default browser."""
+    paulias_path = _find_paulias_md()
+    try:
+        cfg = config.load(paulias_path)
+    except ValidationError as exc:
+        raise click.ClickException(str(exc)) from exc
+
+    match = next((s for s in cfg.shortlinks if s.short == path), None)
+    if match is None:
+        raise click.ClickException(f"Path {path!r} not found in {PAULIAS_MD}.")
+
+    if print_only:
+        click.echo(match.target)
+    else:
+        webbrowser.open(match.target)
+        _console.print(f"[green]✓[/green] Opening {match.target}")
 
 
 @main.command("serve")

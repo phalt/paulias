@@ -577,22 +577,22 @@ plus a footer customised via frontmatter.
 
 ### Phase 5: Polish
 
-- [ ] **5.1** Implement `paulias open <path>`: look up `<path>` in
+- [x] **5.1** Implement `paulias open <path>`: look up `<path>` in
   `paulias.md`, resolve it to its target URL, and open it in the default
   browser via `webbrowser.open()` from the stdlib. Errors if `<path>` does
   not exist. Useful for quick verification of a shortlink without typing
   the full URL. Add a `--print` flag that prints the target URL to stdout
   instead of opening it (handy for piping to other commands).
-- [ ] **5.2** Final CLI output styling: rich-styled success messages,
+- [x] **5.2** Final CLI output styling: rich-styled success messages,
   consistent error formatting, one-line summary at the end of `deploy`.
-- [ ] **5.3** Write the `test.yml` GitHub Actions workflow: run ruff and
+- [x] **5.3** Write the `test.yml` GitHub Actions workflow: run ruff and
   pytest on PRs against `main`.
-- [ ] **5.4** Write `README.md` with sections: what is this, quick start,
+- [x] **5.4** Write `README.md` with sections: what is this, quick start,
   installation, commands (full table of each command and its flags),
   `paulias.md` format, custom domain setup via `cname`, deployment workflow,
   development, fork your own copy.
-- [ ] **5.5** Write `CHANGELOG.md` and `CONTRIBUTING.md`.
-- [ ] **5.6** Write `CLAUDE.md` summarising the project conventions for AI
+- [x] **5.5** Write `CHANGELOG.md` and `CONTRIBUTING.md`.
+- [x] **5.6** Write `CLAUDE.md` summarising the project conventions for AI
   assistants working on the repo.
 
 **Milestone:** Production-ready. Anyone can `uv tool install paulias`, run

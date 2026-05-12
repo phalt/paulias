@@ -37,9 +37,7 @@ def _fail(stderr="error", stdout=""):
 def test_is_clean_true(tmp_path):
     with patch("subprocess.run", return_value=_ok("")) as mock_run:
         assert is_clean(tmp_path) is True
-    mock_run.assert_called_once_with(
-        ["git", "status", "--porcelain"], capture_output=True, text=True, cwd=tmp_path
-    )
+    mock_run.assert_called_once_with(["git", "status", "--porcelain"], capture_output=True, text=True, cwd=tmp_path)
 
 
 def test_is_clean_false(tmp_path):
@@ -82,8 +80,9 @@ def test_push_calls_git_push(tmp_path):
 
 
 def test_git_error_surfaced(tmp_path):
-    with patch("subprocess.run", return_value=_fail("fatal: not a git repository")), pytest.raises(
-        GitError, match="fatal: not a git repository"
+    with (
+        patch("subprocess.run", return_value=_fail("fatal: not a git repository")),
+        pytest.raises(GitError, match="fatal: not a git repository"),
     ):
         is_clean(tmp_path)
 
@@ -168,7 +167,7 @@ def test_deploy_dry_run_no_git(tmp_path, monkeypatch):
         result = runner.invoke(main, ["deploy", "--dry-run"])
         git_calls = [c for c in mock_run.call_args_list if c.args and "git" in str(c.args[0])]
         assert git_calls == [], "dry-run must not call git"
-    assert "Dry run" in result.output
+    assert "dry run" in result.output.lower()
 
 
 def test_deploy_no_push_commits_but_not_pushes(tmp_path, monkeypatch):

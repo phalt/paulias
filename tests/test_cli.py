@@ -283,6 +283,32 @@ def test_init_repo_flag_overrides_auto_detect(tmp_path, monkeypatch):
     assert "phalt/paulias" not in text
 
 
+def test_open_opens_browser(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "paulias.md").write_text(VALID_MD, encoding="utf-8")
+    opened = {}
+    monkeypatch.setattr("paulias.cli.webbrowser.open", lambda url: opened.update(url=url))
+    result = runner.invoke(main, ["open", "gh"])
+    assert result.exit_code == 0
+    assert opened["url"] == "https://github.com/phalt"
+
+
+def test_open_print_flag(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "paulias.md").write_text(VALID_MD, encoding="utf-8")
+    result = runner.invoke(main, ["open", "gh", "--print"])
+    assert result.exit_code == 0
+    assert "https://github.com/phalt" in result.output
+
+
+def test_open_missing_path(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "paulias.md").write_text(VALID_MD, encoding="utf-8")
+    result = runner.invoke(main, ["open", "nope"])
+    assert result.exit_code != 0
+    assert "nope" in result.output
+
+
 def test_serve_errors_without_docs(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     (tmp_path / "paulias.md").write_text(VALID_MD, encoding="utf-8")
