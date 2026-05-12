@@ -11,3 +11,4 @@ footer: "Shortlinks built using [paulias](https://github.com/phalt/paulias)."
 [hyps]: https://paulwrites.software/articles/hyps
 [bsky]: https://bsky.app/profile/paulwrites.software
 [pauldot]: https://paulwrites.software/articles/pauldot
+[test]: https://test.com
