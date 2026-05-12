@@ -143,7 +143,6 @@ def list_cmd(as_json: bool) -> None:
         click.echo(json.dumps([{"short": s.short, "target": s.target} for s in cfg.shortlinks], indent=2))
         return
 
-    console = Console()
     domain = cfg.cname or cfg.repo
     count = len(cfg.shortlinks)
     noun = "entry" if count == 1 else "entries"
