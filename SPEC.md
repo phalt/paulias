@@ -470,22 +470,22 @@ The minimum to load and validate `paulias.md`. No HTML output yet.
 
 `list`, `add`, `delete`, `init`. No HTML output, no git, no deploy.
 
-- [ ] **2.1** Implement `cli.py`: top-level `paulias` Click group, with `add`,
+- [x] **2.1** Implement `cli.py`: top-level `paulias` Click group, with `add`,
   `delete`, `list`, `init`, `deploy` subcommands (deploy stubbed for now).
   All commands locate `paulias.md` in the cwd.
-- [ ] **2.2** Implement `paulias list`: load the config, print as a rich
+- [x] **2.2** Implement `paulias list`: load the config, print as a rich
   table. Support `--json` flag.
-- [ ] **2.3** Implement `paulias add <path> <url>`: validate the new entry,
+- [x] **2.3** Implement `paulias add <path> <url>`: validate the new entry,
   append a new link reference line to the body while preserving the rest of
   the file (frontmatter, existing entries, blank lines). Support `--force`
   and `--deploy`.
-- [ ] **2.4** Implement `paulias delete <path>`: find and remove the matching
+- [x] **2.4** Implement `paulias delete <path>`: find and remove the matching
   link reference line. Support `--deploy`.
-- [ ] **2.5** Implement `paulias init`: write a starter `paulias.md` to the
+- [x] **2.5** Implement `paulias init`: write a starter `paulias.md` to the
   cwd, auto-detecting `repo` from `git remote get-url origin` when possible.
   Error if a file already exists unless `--force`. Support `--repo` to
   override auto-detection.
-- [ ] **2.6** Write tests for each CLI command using Click's `CliRunner`.
+- [x] **2.6** Write tests for each CLI command using Click's `CliRunner`.
   Cover: success cases, validation failures, file-already-exists errors,
   missing-path errors, ordering preservation after add/delete, correct
   link reference syntax written to disk, JSON output format.
