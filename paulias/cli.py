@@ -256,7 +256,6 @@ def deploy_cmd(dry_run: bool, no_push: bool, message: str | None, force: bool) -
         deploy_module.stage([paulias_path, docs_dir], repo_root)
         msg = message or deploy_module.generate_commit_message(cfg, repo_root)
         deploy_module.commit(msg, repo_root)
-        click.echo(f"Committed: {msg}")
     except GitError as exc:
         raise click.ClickException(str(exc)) from exc
 
@@ -266,7 +265,6 @@ def deploy_cmd(dry_run: bool, no_push: bool, message: str | None, force: bool) -
 
     try:
         deploy_module.push(cfg.branch, repo_root)
-        click.echo(f"Pushed to {cfg.repo} ({cfg.branch}).")
     except GitError as exc:
         raise click.ClickException(str(exc)) from exc
 
